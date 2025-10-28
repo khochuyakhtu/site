@@ -11,6 +11,8 @@ export const Resources = {
       earn: 'Earn',
       launchpool: 'Launchpool',
       joinCta: 'Приєднатись',
+      login: 'Увійти',
+      logout: 'Вийти',
       toggleAriaLabel: 'Toggle navigation'
     },
     allOption: 'Усі',
@@ -258,6 +260,27 @@ export const Resources = {
         risk: 'Низький'
       }
     ]
+  },
+  auth: {
+    login: {
+      title: 'Авторизація через Telegram',
+      description:
+        'Підключіть свій Telegram-акаунт, щоб синхронізувати профіль та отримати доступ до персоналізованих матеріалів спільноти.',
+      widgetTitle: 'Увійдіть за кілька кліків',
+      instructionsTitle: 'Що відбувається після входу',
+      instructions: [
+        'Ми використовуємо тільки публічні дані Telegram: імʼя, нікнейм та аватар.',
+        'Після успішної авторизації ви зможете отримувати персональні рекомендації на панелі Earn.',
+        'Ви можете вийти у будь-який момент — дані буде видалено з цього пристрою.'
+      ],
+      privacyNotice:
+        'Натискаючи кнопку нижче, ви підтверджуєте, що погоджуєтесь на одноразову авторизацію через офіційний Telegram Login Widget.',
+      botName: '@hochu_yacht_auth_bot',
+      loggedInTitle: 'Вітаємо у клубі!',
+      loggedInSubtitle:
+        'Ваш Telegram-акаунт підʼєднано. Можете повертатися до дослідження можливостей спільноти.',
+      logoutCta: 'Вийти з акаунту'
+    }
   },
   launchpool: {
     badge: 'Launchpool центр',

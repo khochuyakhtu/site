@@ -1,0 +1,132 @@
+.login-page {
+  padding: 48px 0 96px;
+}
+
+.login-page__container {
+  display: grid;
+  place-items: center;
+}
+
+.login-card {
+  width: min(920px, 100%);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+}
+
+.login-card h1 {
+  margin: 0 0 16px;
+  font-size: clamp(1.8rem, 2vw + 1rem, 2.4rem);
+}
+
+.login-card__description {
+  margin: 0 0 24px;
+  color: var(--text-secondary);
+}
+
+.login-card__info {
+  background: var(--surface-elevated);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 0 0 24px;
+  border: 1px solid var(--border-color);
+}
+
+.login-card__info h2 {
+  margin: 0 0 16px;
+  font-size: 1.1rem;
+}
+
+.login-card__info ul {
+  margin: 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 12px;
+  color: var(--text-secondary);
+}
+
+.login-card__privacy {
+  margin: 16px 0 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.login-card__action {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login-widget {
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px dashed var(--border-color);
+  background: var(--surface-secondary);
+  text-align: center;
+}
+
+.login-widget h3 {
+  margin: 0 0 12px;
+}
+
+.login-widget__bot {
+  margin: 0 0 20px;
+  color: var(--text-secondary);
+}
+
+.login-widget__button {
+  display: flex;
+  justify-content: center;
+}
+
+.login-success {
+  display: grid;
+  gap: 16px;
+  text-align: center;
+}
+
+.login-success__profile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.login-success__profile img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent);
+}
+
+.login-success__avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.login-success__profile strong {
+  display: block;
+  font-size: 1.1rem;
+}
+
+.login-success__profile span {
+  color: var(--text-secondary);
+}
+
+@media (max-width: 720px) {
+  .login-card {
+    grid-template-columns: 1fr;
+  }
+
+  .login-card__info {
+    margin-bottom: 16px;
+  }
+}
