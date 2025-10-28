@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import {
+  Resources,
   exchanges,
   stakingTerms,
   earnProducts as allProducts
-} from '../resources/earnProducts.js';
+} from '../resources/Resources.ts';
 import {
   setExchange,
   setAsset,
@@ -17,23 +18,24 @@ import './EarnContainer.css';
 const EarnContainer = () => {
   const dispatch = useDispatch();
   const { products, filters } = useSelector((state) => state.earn);
+  const { earn, shared } = Resources;
+  const allOption = shared.allOption;
 
   const filteredProducts = useMemo(() => {
     const minApyValue = Number(filters.minApy) || 0;
     return products
       .filter((product) => {
         const matchExchange =
-          filters.exchange === 'Усі' || product.exchange === filters.exchange;
+          filters.exchange === allOption || product.exchange === filters.exchange;
         const matchAsset =
           filters.asset.trim().length === 0 ||
           product.asset.toLowerCase().includes(filters.asset.toLowerCase());
         const matchApy = product.apy >= minApyValue;
-        const matchTerm =
-          filters.term === 'Усі' || product.term === filters.term;
+        const matchTerm = filters.term === allOption || product.term === filters.term;
         return matchExchange && matchAsset && matchApy && matchTerm;
       })
       .sort((a, b) => b.apy - a.apy);
-  }, [products, filters]);
+  }, [products, filters, allOption]);
 
   const aggregated = useMemo(() => {
     const totalTvl = filteredProducts.reduce((sum, item) => sum + item.tvl, 0);
@@ -46,25 +48,26 @@ const EarnContainer = () => {
     };
   }, [filteredProducts]);
 
+  const datasetCountText = earn.table.datasetCount
+    .replace('{current}', filteredProducts.length.toString())
+    .replace('{total}', allProducts.length.toString());
+
   return (
     <div className="container earn">
       <header className="earn__header">
         <div>
-          <span className="badge">Стратегії доходу</span>
-          <h1>Earn панель</h1>
-          <p>
-            Актуальні пропозиції стейкінгу з централізованих бірж. Фільтруйте за
-            біржею, монетою, мінімальним APY та тривалістю блокування.
-          </p>
+          <span className="badge">{earn.badge}</span>
+          <h1>{earn.title}</h1>
+          <p>{earn.description}</p>
         </div>
         <aside className="earn__summary card">
-          <h3>Зведена статистика</h3>
+          <h3>{earn.summaryTitle}</h3>
           <div>
-            <span>Середній APY</span>
+            <span>{earn.summaryAverageLabel}</span>
             <strong>{aggregated.avgApy.toFixed(1)}%</strong>
           </div>
           <div>
-            <span>Сукупний TVL</span>
+            <span>{earn.summaryTvlLabel}</span>
             <strong>${aggregated.totalTvl}K</strong>
           </div>
         </aside>
@@ -73,12 +76,12 @@ const EarnContainer = () => {
       <section className="card earn__filters">
         <div className="earn__filters-grid">
           <label>
-            Біржа
+            {earn.filters.exchangeLabel}
             <select
               value={filters.exchange}
               onChange={(event) => dispatch(setExchange(event.target.value))}
             >
-              <option value="Усі">Усі</option>
+              <option value={allOption}>{allOption}</option>
               {exchanges.map((exchange) => (
                 <option key={exchange} value={exchange}>
                   {exchange}
@@ -87,16 +90,16 @@ const EarnContainer = () => {
             </select>
           </label>
           <label>
-            Монета
+            {earn.filters.assetLabel}
             <input
               type="text"
-              placeholder="Наприклад, SOL"
+              placeholder={earn.filters.assetPlaceholder}
               value={filters.asset}
               onChange={(event) => dispatch(setAsset(event.target.value))}
             />
           </label>
           <label>
-            Мінімальний APY
+            {earn.filters.minApyLabel}
             <input
               type="number"
               min="0"
@@ -106,12 +109,12 @@ const EarnContainer = () => {
             />
           </label>
           <label>
-            Термін
+            {earn.filters.termLabel}
             <select
               value={filters.term}
               onChange={(event) => dispatch(setTerm(event.target.value))}
             >
-              <option value="Усі">Усі</option>
+              <option value={allOption}>{allOption}</option>
               {stakingTerms.map((term) => (
                 <option key={term} value={term}>
                   {term}
@@ -125,7 +128,7 @@ const EarnContainer = () => {
           className="button secondary"
           onClick={() => dispatch(resetEarnFilters())}
         >
-          Скинути фільтри
+          {earn.filters.reset}
         </button>
       </section>
 
@@ -133,12 +136,12 @@ const EarnContainer = () => {
         <table>
           <thead>
             <tr>
-              <th>Біржа</th>
-              <th>Монета</th>
-              <th>APY</th>
-              <th>Термін</th>
-              <th>TVL (тис.$)</th>
-              <th>Ризик</th>
+              <th>{earn.table.headers.exchange}</th>
+              <th>{earn.table.headers.asset}</th>
+              <th>{earn.table.headers.apy}</th>
+              <th>{earn.table.headers.term}</th>
+              <th>{earn.table.headers.tvl}</th>
+              <th>{earn.table.headers.risk}</th>
             </tr>
           </thead>
           <tbody>
@@ -155,20 +158,15 @@ const EarnContainer = () => {
             {filteredProducts.length === 0 && (
               <tr>
                 <td colSpan={6} className="earn__empty">
-                  За вибраними параметрами немає пропозицій.
+                  {earn.table.empty}
                 </td>
               </tr>
             )}
           </tbody>
         </table>
         <footer className="earn__dataset">
-          <small>
-            Дані оновлені вручну для демо. У продакшені інтегруйте API бірж для
-            отримання реальних значень.
-          </small>
-          <small>
-            Показано {filteredProducts.length} з {allProducts.length} продуктів.
-          </small>
+          <small>{earn.table.datasetNote}</small>
+          <small>{datasetCountText}</small>
         </footer>
       </section>
     </div>

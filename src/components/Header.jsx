@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle.jsx';
+import { Resources } from '../resources/Resources.ts';
 import './Header.css';
 
 const Header = () => {
@@ -10,32 +11,36 @@ const Header = () => {
     document.body.style.overflow = isOpen ? 'hidden' : 'auto';
   }, [isOpen]);
 
+  const {
+    shared: { brand, navigation }
+  } = Resources;
+
   return (
     <header className="hy-header">
       <div className="container hy-nav">
         <Link to="/" className="hy-logo">
-          <span>🚤</span>
+          <span>{brand.emoji}</span>
           <div>
-            <strong>Хочу Яхту</strong>
-            <small>crypto collective</small>
+            <strong>{brand.name}</strong>
+            <small>{brand.tagline}</small>
           </div>
         </Link>
         <nav className={`hy-menu ${isOpen ? 'open' : ''}`}>
           <NavLink to="/" onClick={() => setIsOpen(false)}>
-            Головна
+            {navigation.home}
           </NavLink>
           <NavLink to="/blog" onClick={() => setIsOpen(false)}>
-            Блог
+            {navigation.blog}
           </NavLink>
           <NavLink to="/earn" onClick={() => setIsOpen(false)}>
-            Earn
+            {navigation.earn}
           </NavLink>
           <NavLink to="/launchpool" onClick={() => setIsOpen(false)}>
-            Launchpool
+            {navigation.launchpool}
           </NavLink>
           <div className="hy-menu-cta">
             <Link to="/earn" className="button">
-              Приєднатись
+              {navigation.joinCta}
             </Link>
             <ThemeToggle />
           </div>
@@ -43,7 +48,7 @@ const Header = () => {
         <button
           type="button"
           className="hy-burger"
-          aria-label="Toggle navigation"
+          aria-label={navigation.toggleAriaLabel}
           onClick={() => setIsOpen((prev) => !prev)}
         >
           <span />

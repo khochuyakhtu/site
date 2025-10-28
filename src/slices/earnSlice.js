@@ -1,15 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { earnProducts } from '../resources/earnProducts.js';
+import { Resources, earnProducts } from '../resources/Resources.ts';
+
+const allOption = Resources.shared.allOption;
 
 const earnSlice = createSlice({
   name: 'earn',
   initialState: {
     products: earnProducts,
     filters: {
-      exchange: 'Усі',
+      exchange: allOption,
       asset: '',
       minApy: '',
-      term: 'Усі'
+      term: allOption
     }
   },
   reducers: {
@@ -27,10 +29,10 @@ const earnSlice = createSlice({
     },
     resetEarnFilters(state) {
       state.filters = {
-        exchange: 'Усі',
+        exchange: allOption,
         asset: '',
         minApy: '',
-        term: 'Усі'
+        term: allOption
       };
     }
   }

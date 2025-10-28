@@ -1,12 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { blogPosts } from '../resources/blogPosts.js';
+import { Resources, blogPosts } from '../resources/Resources.ts';
+
+const defaultCategory = Resources.blog.allCategoryLabel;
 
 const blogSlice = createSlice({
   name: 'blog',
   initialState: {
     posts: blogPosts,
     filters: {
-      category: 'Усі',
+      category: defaultCategory,
       query: ''
     }
   },
