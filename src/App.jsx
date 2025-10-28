@@ -7,6 +7,7 @@ import HomeContainer from './containers/HomeContainer.jsx';
 import BlogContainer from './containers/BlogContainer.jsx';
 import EarnContainer from './containers/EarnContainer.jsx';
 import LaunchpoolContainer from './containers/LaunchpoolContainer.jsx';
+import LoginContainer from './containers/LoginContainer.jsx';
 
 const App = () => {
   const mode = useSelector((state) => state.theme.mode);
@@ -24,6 +25,7 @@ const App = () => {
           <Route path="/blog" element={<BlogContainer />} />
           <Route path="/earn" element={<EarnContainer />} />
           <Route path="/launchpool" element={<LaunchpoolContainer />} />
+          <Route path="/login" element={<LoginContainer />} />
         </Routes>
       </main>
       <Footer />
