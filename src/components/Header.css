@@ -1,0 +1,105 @@
+.hy-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(12px);
+  background: color-mix(in srgb, var(--surface-primary) 82%, transparent);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.hy-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+}
+
+.hy-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.hy-logo small {
+  display: block;
+  font-weight: 500;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.hy-menu {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.hy-menu a {
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: color var(--transition-base);
+}
+
+.hy-menu a.active {
+  color: var(--accent);
+}
+
+.hy-menu a:hover {
+  color: var(--text-primary);
+}
+
+.hy-menu-cta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 16px;
+}
+
+.hy-burger {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  padding: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.hy-burger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--text-primary);
+  transition: transform var(--transition-base);
+}
+
+@media (max-width: 900px) {
+  .hy-menu {
+    position: fixed;
+    inset: 0;
+    top: 72px;
+    background: var(--surface-primary);
+    flex-direction: column;
+    padding: 32px;
+    align-items: flex-start;
+    gap: 24px;
+    transform: translateY(-100vh);
+    transition: transform var(--transition-base);
+  }
+
+  .hy-menu.open {
+    transform: translateY(0);
+  }
+
+  .hy-menu-cta {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .hy-burger {
+    display: inline-flex;
+  }
+}
