@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useMemo } from 'react';
-import { launchpoolStatuses } from '../resources/launchpoolCampaigns.js';
+import { Resources, launchpoolStatuses } from '../resources/Resources.ts';
 import {
   setStatus,
   setLaunchpoolExchange,
@@ -14,13 +14,15 @@ const LaunchpoolContainer = () => {
   const { campaigns, filters, calculator } = useSelector(
     (state) => state.launchpool
   );
+  const { launchpool, shared } = Resources;
+  const allOption = shared.allOption;
 
   const filteredCampaigns = useMemo(() => {
     return campaigns.filter((campaign) => {
       const matchStatus =
-        filters.status === 'Усі' || campaign.status === filters.status;
+        filters.status === allOption || campaign.status === filters.status;
       const matchExchange =
-        filters.exchange === 'Усі' || campaign.exchange === filters.exchange;
+        filters.exchange === allOption || campaign.exchange === filters.exchange;
       const q = filters.query.trim().toLowerCase();
       const matchQuery =
         q.length === 0 ||
@@ -28,7 +30,7 @@ const LaunchpoolContainer = () => {
         campaign.lockAssets.some((asset) => asset.toLowerCase().includes(q));
       return matchStatus && matchExchange && matchQuery;
     });
-  }, [campaigns, filters]);
+  }, [campaigns, filters, allOption]);
 
   const forecast = useMemo(() => {
     const deposit = Number(calculator.deposit) || 0;
@@ -46,17 +48,14 @@ const LaunchpoolContainer = () => {
     <div className="container launchpool">
       <header className="launchpool__header">
         <div>
-          <span className="badge">Launchpool центр</span>
-          <h1>Моніторинг Launchpool</h1>
-          <p>
-            Відстежуйте активні та майбутні кампанії на різних біржах. Підберіть
-            відповідні пропозиції та одразу порахуйте прогнозований прибуток.
-          </p>
+          <span className="badge">{launchpool.badge}</span>
+          <h1>{launchpool.title}</h1>
+          <p>{launchpool.description}</p>
         </div>
         <aside className="launchpool__calculator card">
-          <h3>Калькулятор прибутку</h3>
+          <h3>{launchpool.calculator.title}</h3>
           <label>
-            Депозит, $
+            {launchpool.calculator.depositLabel}
             <input
               type="number"
               min="0"
@@ -67,7 +66,7 @@ const LaunchpoolContainer = () => {
             />
           </label>
           <label>
-            Очікуваний APY, %
+            {launchpool.calculator.apyLabel}
             <input
               type="number"
               min="0"
@@ -79,25 +78,23 @@ const LaunchpoolContainer = () => {
             />
           </label>
           <label>
-            Тривалість, днів
+            {launchpool.calculator.durationLabel}
             <input
               type="number"
               min="1"
               value={calculator.durationDays}
               onChange={(event) =>
-                dispatch(
-                  setCalculatorValue({ durationDays: event.target.value })
-                )
+                dispatch(setCalculatorValue({ durationDays: event.target.value }))
               }
             />
           </label>
           <div className="launchpool__forecast">
             <div>
-              <span>Очікуваний прибуток</span>
+              <span>{launchpool.calculator.forecast.profit}</span>
               <strong>${forecast.profit.toFixed(2)}</strong>
             </div>
             <div>
-              <span>Підсумок</span>
+              <span>{launchpool.calculator.forecast.total}</span>
               <strong>${forecast.total.toFixed(2)}</strong>
             </div>
           </div>
@@ -107,12 +104,12 @@ const LaunchpoolContainer = () => {
       <section className="card launchpool__filters">
         <div className="launchpool__filters-grid">
           <label>
-            Статус
+            {launchpool.filters.statusLabel}
             <select
               value={filters.status}
               onChange={(event) => dispatch(setStatus(event.target.value))}
             >
-              <option value="Усі">Усі</option>
+              <option value={allOption}>{allOption}</option>
               {launchpoolStatuses.map((status) => (
                 <option key={status} value={status}>
                   {status}
@@ -121,14 +118,14 @@ const LaunchpoolContainer = () => {
             </select>
           </label>
           <label>
-            Біржа
+            {launchpool.filters.exchangeLabel}
             <select
               value={filters.exchange}
               onChange={(event) =>
                 dispatch(setLaunchpoolExchange(event.target.value))
               }
             >
-              <option value="Усі">Усі</option>
+              <option value={allOption}>{allOption}</option>
               {[...new Set(campaigns.map((item) => item.exchange))].map(
                 (exchange) => (
                   <option key={exchange} value={exchange}>
@@ -139,10 +136,10 @@ const LaunchpoolContainer = () => {
             </select>
           </label>
           <label>
-            Пошук за проектом або активами
+            {launchpool.filters.queryLabel}
             <input
               type="search"
-              placeholder="Наприклад, Sui або BNB"
+              placeholder={launchpool.filters.queryPlaceholder}
               value={filters.query}
               onChange={(event) =>
                 dispatch(setLaunchpoolQuery(event.target.value))
@@ -161,8 +158,8 @@ const LaunchpoolContainer = () => {
             </div>
             <h3>{campaign.project}</h3>
             <p>
-              APY до <strong>{campaign.roi}%</strong>. Локація активів:{' '}
-              {campaign.lockAssets.join(', ')}
+              {launchpool.card.descriptionPrefix} <strong>{campaign.roi}%</strong>.{' '}
+              {launchpool.card.assetsLabel} {campaign.lockAssets.join(', ')}
             </p>
             <footer>
               <span>
@@ -170,23 +167,22 @@ const LaunchpoolContainer = () => {
                   month: 'short',
                   day: 'numeric'
                 })}{' '}
-                —
-                {' '}
+                —{' '}
                 {new Date(campaign.endDate).toLocaleDateString('uk-UA', {
                   month: 'short',
                   day: 'numeric'
                 })}
               </span>
               <button type="button" className="button secondary">
-                Додати в трекер
+                {launchpool.card.cta}
               </button>
             </footer>
           </article>
         ))}
         {filteredCampaigns.length === 0 && (
           <div className="card launchpool__empty">
-            <h3>Пропозицій не знайдено</h3>
-            <p>Змініть фільтри, щоб побачити більше launchpool кампаній.</p>
+            <h3>{launchpool.card.empty.title}</h3>
+            <p>{launchpool.card.empty.description}</p>
           </div>
         )}
       </section>

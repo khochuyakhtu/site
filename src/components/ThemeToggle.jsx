@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleTheme } from '../slices/themeSlice.js';
+import { Resources } from '../resources/Resources.ts';
 
 const ThemeToggle = () => {
   const mode = useSelector((state) => state.theme.mode);
@@ -11,7 +12,9 @@ const ThemeToggle = () => {
       className="button secondary"
       onClick={() => dispatch(toggleTheme())}
     >
-      {mode === 'light' ? '🌙 Темна' : '☀️ Світла'}
+      {mode === 'light'
+        ? Resources.shared.themeToggle.dark
+        : Resources.shared.themeToggle.light}
     </button>
   );
 };

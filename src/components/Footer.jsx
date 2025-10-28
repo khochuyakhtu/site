@@ -1,42 +1,52 @@
 import { Link } from 'react-router-dom';
+import { Resources } from '../resources/Resources.ts';
 import './Footer.css';
 
-const Footer = () => (
-  <footer className="hy-footer">
-    <div className="container hy-footer__layout">
-      <div>
-        <h3>🚤 Хочу Яхту</h3>
-        <p>
-          Спільнота ентузіастів Web3, які діляться знаннями та будують пасивний
-          дохід на крипторинку.
-        </p>
-      </div>
-      <div className="hy-footer__links">
+const Footer = () => {
+  const {
+    shared: { navigation, contact },
+    footer
+  } = Resources;
+
+  const copyright = footer.copyright.replace(
+    '{year}',
+    new Date().getFullYear().toString()
+  );
+
+  return (
+    <footer className="hy-footer">
+      <div className="container hy-footer__layout">
         <div>
-          <h4>Навігація</h4>
-          <Link to="/">Головна</Link>
-          <Link to="/blog">Блог</Link>
-          <Link to="/earn">Earn</Link>
-          <Link to="/launchpool">Launchpool</Link>
+          <h3>{footer.title}</h3>
+          <p>{footer.description}</p>
         </div>
-        <div>
-          <h4>Контакти</h4>
-          <a href="mailto:crew@hochu-yacht.xyz">crew@hochu-yacht.xyz</a>
-          <a href="https://t.me/hochu-yacht" target="_blank" rel="noreferrer">
-            Telegram
-          </a>
-          <a href="https://x.com/hochu-yacht" target="_blank" rel="noreferrer">
-            X (Twitter)
-          </a>
+        <div className="hy-footer__links">
+          <div>
+            <h4>{footer.navigationTitle}</h4>
+            <Link to="/">{navigation.home}</Link>
+            <Link to="/blog">{navigation.blog}</Link>
+            <Link to="/earn">{navigation.earn}</Link>
+            <Link to="/launchpool">{navigation.launchpool}</Link>
+          </div>
+          <div>
+            <h4>{footer.contactsTitle}</h4>
+            <a href={`mailto:${contact.email}`}>{contact.email}</a>
+            <a href={contact.telegram.url} target="_blank" rel="noreferrer">
+              {contact.telegram.label}
+            </a>
+            <a href={contact.x.url} target="_blank" rel="noreferrer">
+              {contact.x.label}
+            </a>
+          </div>
         </div>
       </div>
-    </div>
-    <div className="hy-footer__bottom">
-      <div className="container">
-        <small>© {new Date().getFullYear()} Хочу Яхту. Всі права захищені.</small>
+      <div className="hy-footer__bottom">
+        <div className="container">
+          <small>{copyright}</small>
+        </div>
       </div>
-    </div>
-  </footer>
-);
+    </footer>
+  );
+};
 
 export default Footer;

@@ -1,13 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { launchpoolCampaigns } from '../resources/launchpoolCampaigns.js';
+import { Resources, launchpoolCampaigns } from '../resources/Resources.ts';
+
+const allOption = Resources.shared.allOption;
 
 const launchpoolSlice = createSlice({
   name: 'launchpool',
   initialState: {
     campaigns: launchpoolCampaigns,
     filters: {
-      status: 'Усі',
-      exchange: 'Усі',
+      status: allOption,
+      exchange: allOption,
       query: ''
     },
     calculator: {
