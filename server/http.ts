@@ -30,3 +30,25 @@ export async function fetchJson(url: string, options: RequestInit = {}): Promise
     throw error;
   }
 }
+
+export async function fetchJsonFromAny(
+  urls: string[],
+  options: RequestInit = {}
+): Promise<unknown> {
+  let lastError: unknown = null;
+
+  for (const url of urls) {
+    try {
+      return await fetchJson(url, options);
+    } catch (error) {
+      lastError = error;
+      continue;
+    }
+  }
+
+  if (lastError instanceof Error) {
+    throw lastError;
+  }
+
+  throw new Error('All endpoints failed');
+}

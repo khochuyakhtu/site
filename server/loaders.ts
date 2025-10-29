@@ -275,14 +275,21 @@ export async function loadLaunchpoolData({
       exchange: 'Binance',
       fetch: async () => {
         const data = (await fetchBinanceLaunchpoolProjects()) as Record<string, any>;
-        const rawList =
-          data?.data?.projectList ??
-          data?.data?.projects ??
-          data?.data?.list ??
-          data?.data ??
-          [];
-        const list = Array.isArray(rawList) ? rawList : [];
-        return list.map((item) => normaliseLaunchpoolItem(item as Record<string, unknown>, 'Binance'));
+        const rawList = pickArrayCandidate(
+          data?.data?.projectList,
+          data?.data?.projects,
+          data?.data?.list,
+          data?.data?.items,
+          data?.data,
+          data?.projectList,
+          data?.projects,
+          data?.list,
+          data?.items,
+          data
+        );
+        return rawList.map((item) =>
+          normaliseLaunchpoolItem(item as Record<string, unknown>, 'Binance')
+        );
       }
     },
     {
