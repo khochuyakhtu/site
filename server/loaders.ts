@@ -305,7 +305,7 @@ export async function loadLaunchpoolData({
       exchange: 'OKX',
       fetch: async () => {
         const url =
-          'https://www.okx.com/priapi/v5/earn/financial/launchpool/project?status=all&limit=50';
+          'https://www.okx.com/api/v5/earn/financial/launchpool/project?status=all&limit=50';
         const json = (await fetchJson(url)) as Record<string, any>;
         const list = Array.isArray(json?.data) ? json.data : [];
         return list.map((item) => normaliseLaunchpoolItem(item as Record<string, unknown>, 'OKX'));
@@ -425,7 +425,7 @@ export async function loadStakingData({
       exchange: 'OKX',
       fetch: async () => {
         const url =
-          'https://www.okx.com/api/v5/finance/staking-defi/orders?productType=staking&limit=50';
+          'https://www.okx.com/api/v5/finance/staking-defi/offers?protocolType=staking&limit=50';
         const json = (await fetchJson(url)) as Record<string, any>;
         const list = Array.isArray(json?.data) ? json.data : [];
         return list.map((item) => normaliseStakingItem(item as Record<string, unknown>, 'OKX'));
