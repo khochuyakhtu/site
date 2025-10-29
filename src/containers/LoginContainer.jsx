@@ -6,6 +6,7 @@ import './LoginContainer.css';
 
 const TELEGRAM_WIDGET_SRC = 'https://telegram.org/js/telegram-widget.js?22';
 const TELEGRAM_CALLBACK_NAME = 'hochuYachtOnTelegramAuth';
+const TELEGRAM_VERIFY_ENDPOINT = '/api/auth/telegram/verify';
 
 const sanitizeUser = (user) => {
   if (!user || !user.id) {
@@ -23,6 +24,28 @@ const sanitizeUser = (user) => {
   };
 };
 
+const verifyTelegramAuth = async (authPayload) => {
+  try {
+    const response = await fetch(TELEGRAM_VERIFY_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(authPayload)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to verify Telegram login: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return sanitizeUser(data?.user);
+  } catch (error) {
+    console.error('Unable to verify Telegram login', error);
+    return null;
+  }
+};
+
 const LoginContainer = () => {
   const dispatch = useDispatch();
   const widgetContainerRef = useRef(null);
@@ -33,14 +56,18 @@ const LoginContainer = () => {
   } = Resources;
 
   const handleTelegramAuth = useCallback(
-    (authData) => {
+    async (authData) => {
       const sanitized = sanitizeUser(authData);
 
-      if (!sanitized) {
+      if (!sanitized || !sanitized.hash || !sanitized.authDate) {
         return;
       }
 
-      dispatch(setUser(sanitized));
+      const verifiedUser = await verifyTelegramAuth(authData);
+
+      if (verifiedUser) {
+        dispatch(setUser(verifiedUser));
+      }
     },
     [dispatch]
   );
