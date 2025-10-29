@@ -73,6 +73,42 @@ export const fallbackLaunchpoolCampaigns: LaunchpoolCampaign[] = [
     sourceUrl: 'https://www.bybit.com/en-US/launchpool/'
   },
   {
+    id: 'bitget-neo',
+    exchange: 'Bitget',
+    project: 'NEO Boost',
+    roi: 14.8,
+    status: 'Активні',
+    startDate: '2024-03-18T00:00:00.000Z',
+    endDate: '2024-04-18T00:00:00.000Z',
+    lockAssets: ['BGB', 'USDT'],
+    source: 'Bitget Launchpool',
+    sourceUrl: 'https://www.bitget.com/launchpool'
+  },
+  {
+    id: 'mexc-celestia',
+    exchange: 'MEXC',
+    project: 'Celestia',
+    roi: 19.4,
+    status: 'Майбутні',
+    startDate: '2024-05-01T00:00:00.000Z',
+    endDate: '2024-05-31T00:00:00.000Z',
+    lockAssets: ['MX'],
+    source: 'MEXC Launchpad',
+    sourceUrl: 'https://www.mexc.com/launchpad'
+  },
+  {
+    id: 'whitebit-aptos',
+    exchange: 'WhiteBIT',
+    project: 'APT Liquidity Mining',
+    roi: 11.6,
+    status: 'Активні',
+    startDate: '2024-03-10T00:00:00.000Z',
+    endDate: '2024-04-10T00:00:00.000Z',
+    lockAssets: ['WBT', 'USDT'],
+    source: 'WhiteBIT Earn',
+    sourceUrl: 'https://whitebit.com/earn'
+  },
+  {
     id: 'kraken-staked-eth',
     exchange: 'Kraken',
     project: 'ETH Staking',

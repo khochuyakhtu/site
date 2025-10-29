@@ -66,6 +66,15 @@ function ensureIsoDate(value: unknown): string | null {
   return date.toISOString();
 }
 
+function pickArrayCandidate(...candidates: unknown[]): unknown[] {
+  for (const candidate of candidates) {
+    if (Array.isArray(candidate)) {
+      return candidate;
+    }
+  }
+  return [];
+}
+
 function normaliseLaunchpoolItem(raw: Record<string, unknown>, exchange: string): LaunchpoolCampaign {
   const id = String(
     raw.projectId ?? raw.id ?? raw.uid ?? raw.projectName ?? randomUUID()
@@ -302,6 +311,25 @@ export async function loadLaunchpoolData({
       }
     },
     {
+      exchange: 'Bitget',
+      fetch: async () => {
+        const url =
+          'https://www.bitget.com/v1/spot/launchpad/launchpool/ongoingList?page=1&pageSize=50';
+        const json = (await fetchJson(url)) as Record<string, any>;
+        const rawList = pickArrayCandidate(
+          json?.data?.list,
+          json?.data?.projectList,
+          json?.data?.records,
+          json?.data,
+          json?.result?.list,
+          json?.result
+        );
+        return rawList.map((item) =>
+          normaliseLaunchpoolItem(item as Record<string, unknown>, 'Bitget')
+        );
+      }
+    },
+    {
       exchange: 'OKX',
       fetch: async () => {
         const url =
@@ -309,6 +337,42 @@ export async function loadLaunchpoolData({
         const json = (await fetchJson(url)) as Record<string, any>;
         const list = Array.isArray(json?.data) ? json.data : [];
         return list.map((item) => normaliseLaunchpoolItem(item as Record<string, unknown>, 'OKX'));
+      }
+    },
+    {
+      exchange: 'MEXC',
+      fetch: async () => {
+        const url =
+          'https://www.mexc.com/api/platform/launchpad/list?pageSize=50&pageNum=1&status=ALL';
+        const json = (await fetchJson(url)) as Record<string, any>;
+        const rawList = pickArrayCandidate(
+          json?.data?.list,
+          json?.data?.projects,
+          json?.data,
+          json?.result?.list,
+          json?.result
+        );
+        return rawList.map((item) =>
+          normaliseLaunchpoolItem(item as Record<string, unknown>, 'MEXC')
+        );
+      }
+    },
+    {
+      exchange: 'WhiteBIT',
+      fetch: async () => {
+        const url = 'https://whitebit.com/api/v4/public/launchpad';
+        const json = (await fetchJson(url)) as Record<string, any>;
+        const rawList = pickArrayCandidate(
+          json?.data?.projects,
+          json?.data?.list,
+          json?.data,
+          json?.result?.list,
+          json?.result,
+          json
+        );
+        return rawList.map((item) =>
+          normaliseLaunchpoolItem(item as Record<string, unknown>, 'WhiteBIT')
+        );
       }
     }
   ];
@@ -374,6 +438,61 @@ export async function loadEarnData({
         const rawList = json?.result?.list ?? json?.data ?? [];
         const list = Array.isArray(rawList) ? rawList : [];
         return list.map((item) => normaliseEarnProduct(item as Record<string, unknown>, 'Bybit'));
+      }
+    },
+    {
+      exchange: 'Bitget',
+      fetch: async () => {
+        const url = 'https://www.bitget.com/v1/earn/defi/product/list?page=1&pageSize=50';
+        const json = (await fetchJson(url)) as Record<string, any>;
+        const rawList = pickArrayCandidate(
+          json?.data?.list,
+          json?.data?.records,
+          json?.data?.items,
+          json?.data,
+          json?.result?.list,
+          json?.result
+        );
+        return rawList.map((item) =>
+          normaliseEarnProduct(item as Record<string, unknown>, 'Bitget')
+        );
+      }
+    },
+    {
+      exchange: 'MEXC',
+      fetch: async () => {
+        const url =
+          'https://www.mexc.com/open/api/v2/earn/product/list?page=1&page_size=50&status=ALL';
+        const json = (await fetchJson(url)) as Record<string, any>;
+        const rawList = pickArrayCandidate(
+          json?.data?.resultList,
+          json?.data?.list,
+          json?.data?.items,
+          json?.data,
+          json?.result?.list,
+          json?.result
+        );
+        return rawList.map((item) =>
+          normaliseEarnProduct(item as Record<string, unknown>, 'MEXC')
+        );
+      }
+    },
+    {
+      exchange: 'WhiteBIT',
+      fetch: async () => {
+        const url = 'https://whitebit.com/api/v4/public/earn';
+        const json = (await fetchJson(url)) as Record<string, any>;
+        const rawList = pickArrayCandidate(
+          json?.data?.products,
+          json?.data?.list,
+          json?.data,
+          json?.result?.list,
+          json?.result,
+          json
+        );
+        return rawList.map((item) =>
+          normaliseEarnProduct(item as Record<string, unknown>, 'WhiteBIT')
+        );
       }
     }
   ];
