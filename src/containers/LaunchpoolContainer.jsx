@@ -1,21 +1,29 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Resources, launchpoolStatuses } from '../resources/Resources.ts';
 import {
   setStatus,
   setLaunchpoolExchange,
   setLaunchpoolQuery,
-  setCalculatorValue
+  setCalculatorValue,
+  fetchLaunchpoolCampaigns
 } from '../slices/launchpoolSlice.js';
+import StatusMessage from '../components/StatusMessage.jsx';
 import './LaunchpoolContainer.css';
 
 const LaunchpoolContainer = () => {
   const dispatch = useDispatch();
-  const { campaigns, filters, calculator } = useSelector(
+  const { campaigns, filters, calculator, status, error, warnings, meta } = useSelector(
     (state) => state.launchpool
   );
   const { launchpool, shared } = Resources;
   const allOption = shared.allOption;
+
+  useEffect(() => {
+    if (status === 'idle') {
+      dispatch(fetchLaunchpoolCampaigns());
+    }
+  }, [status, dispatch]);
 
   const filteredCampaigns = useMemo(() => {
     return campaigns.filter((campaign) => {
@@ -43,6 +51,43 @@ const LaunchpoolContainer = () => {
       total: deposit + profit
     };
   }, [calculator]);
+
+  const uniqueWarningExchanges = Array.from(
+    new Set((warnings ?? []).map((warning) => warning.exchange).filter(Boolean))
+  );
+  const warningsDescription = uniqueWarningExchanges.length
+    ? launchpool.apiStatus.warningsDescription.replace(
+        '{exchanges}',
+        uniqueWarningExchanges.join(', ')
+      )
+    : null;
+  const warningItems = (warnings ?? []).map((warning) => {
+    const prefix = warning.exchange ? `${warning.exchange}: ` : '';
+    return `${prefix}${warning.message ?? launchpool.apiStatus.error}`;
+  });
+
+  const formattedUpdatedAt = meta?.updatedAt
+    ? new Date(meta.updatedAt).toLocaleString('uk-UA', {
+        day: '2-digit',
+        month: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      })
+    : null;
+
+  const formatDate = (value) => {
+    if (!value) {
+      return '—';
+    }
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return '—';
+    }
+    return date.toLocaleDateString('uk-UA', {
+      month: 'short',
+      day: 'numeric'
+    });
+  };
 
   return (
     <div className="container launchpool">
@@ -149,6 +194,38 @@ const LaunchpoolContainer = () => {
         </div>
       </section>
 
+      {(status === 'loading' || error || (warnings ?? []).length > 0) && (
+        <section className="launchpool__alerts">
+          {status === 'loading' && (
+            <StatusMessage tone="info" title={launchpool.apiStatus.loading} />
+          )}
+          {error && (
+            <StatusMessage
+              tone="error"
+              title={launchpool.apiStatus.error}
+              description={error}
+            />
+          )}
+          {(warnings ?? []).length > 0 && (
+            <StatusMessage
+              tone="warning"
+              title={launchpool.apiStatus.warningsTitle}
+              description={warningsDescription}
+              items={warningItems}
+            />
+          )}
+        </section>
+      )}
+
+      {formattedUpdatedAt && (
+        <div className="launchpool__meta">
+          <small>
+            {launchpool.meta?.lastUpdatedPrefix}
+            {formattedUpdatedAt}
+          </small>
+        </div>
+      )}
+
       <section className="launchpool__grid">
         {filteredCampaigns.map((campaign) => (
           <article key={campaign.id} className="card launchpool__card">
@@ -159,19 +236,14 @@ const LaunchpoolContainer = () => {
             <h3>{campaign.project}</h3>
             <p>
               {launchpool.card.descriptionPrefix} <strong>{campaign.roi}%</strong>.{' '}
-              {launchpool.card.assetsLabel} {campaign.lockAssets.join(', ')}
+              {launchpool.card.assetsLabel}{' '}
+              {Array.isArray(campaign.lockAssets) && campaign.lockAssets.length > 0
+                ? campaign.lockAssets.join(', ')
+                : '—'}
             </p>
             <footer>
               <span>
-                {new Date(campaign.startDate).toLocaleDateString('uk-UA', {
-                  month: 'short',
-                  day: 'numeric'
-                })}{' '}
-                —{' '}
-                {new Date(campaign.endDate).toLocaleDateString('uk-UA', {
-                  month: 'short',
-                  day: 'numeric'
-                })}
+                {formatDate(campaign.startDate)} — {formatDate(campaign.endDate)}
               </span>
               <button type="button" className="button secondary">
                 {launchpool.card.cta}

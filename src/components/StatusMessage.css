@@ -1,0 +1,56 @@
+.status-message {
+  border-radius: 16px;
+  padding: 16px 20px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-secondary);
+  display: grid;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+
+.status-message__title {
+  margin: 0;
+  font-weight: 700;
+}
+
+.status-message__description {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.status-message__list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+  color: var(--text-secondary);
+}
+
+.status-message--info {
+  border-color: rgba(99, 169, 255, 0.45);
+  background: rgba(99, 169, 255, 0.12);
+  color: var(--accent);
+}
+
+.status-message--warning {
+  border-color: rgba(255, 171, 0, 0.45);
+  background: rgba(255, 193, 7, 0.12);
+  color: #b26a00;
+}
+
+.status-message--warning .status-message__description,
+.status-message--warning .status-message__list {
+  color: #b26a00;
+}
+
+.status-message--error {
+  border-color: rgba(239, 68, 68, 0.45);
+  background: rgba(239, 68, 68, 0.12);
+  color: #d34040;
+}
+
+.status-message--error .status-message__description,
+.status-message--error .status-message__list {
+  color: #d34040;
+}

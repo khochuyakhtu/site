@@ -67,6 +67,19 @@
   font-weight: 600;
 }
 
+.launchpool__alerts {
+  display: grid;
+  gap: 16px;
+}
+
+.launchpool__meta {
+  display: flex;
+  justify-content: flex-end;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+
 .launchpool__grid {
   display: grid;
   gap: 28px;
