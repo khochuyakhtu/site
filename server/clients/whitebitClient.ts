@@ -1,8 +1,12 @@
-import { fetchJson } from '../http.ts';
+import { fetchJson, fetchJsonFromAny } from '../http.ts';
 
 export async function fetchWhitebitLaunchpadProjects(): Promise<unknown> {
-  const url = 'https://whitebit.com/api/v4/public/launchpad';
-  return fetchJson(url);
+  const urls = [
+    'https://whitebit.com/api/v4/public/launchpad/list',
+    'https://whitebit.com/api/v4/public/launchpad',
+    'https://whitebit.com/api/v4/public/earn/launchpad'
+  ];
+  return fetchJsonFromAny(urls);
 }
 
 export async function fetchWhitebitEarnProducts(): Promise<unknown> {
