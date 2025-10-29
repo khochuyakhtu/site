@@ -73,6 +73,42 @@ export const fallbackEarnProducts: EarnProduct[] = [
     sourceUrl: 'https://www.bybit.com/en-US/earn/'
   },
   {
+    id: 'bitget-atom-flex',
+    exchange: 'Bitget',
+    asset: 'ATOM',
+    apy: 9.8,
+    term: 'Гнучкий',
+    tvl: 180,
+    risk: 'Середній',
+    category: 'Flexible',
+    source: 'Bitget Earn',
+    sourceUrl: 'https://www.bitget.com/earn'
+  },
+  {
+    id: 'mexc-sei-locked',
+    exchange: 'MEXC',
+    asset: 'SEI',
+    apy: 16.2,
+    term: '60 днів',
+    tvl: 140,
+    risk: 'Високий',
+    category: 'Locked',
+    source: 'MEXC Earn',
+    sourceUrl: 'https://www.mexc.com/earn'
+  },
+  {
+    id: 'whitebit-usdc-flex',
+    exchange: 'WhiteBIT',
+    asset: 'USDC',
+    apy: 7.4,
+    term: 'Гнучкий',
+    tvl: 160,
+    risk: 'Низький',
+    category: 'Flexible',
+    source: 'WhiteBIT Earn',
+    sourceUrl: 'https://whitebit.com/earn'
+  },
+  {
     id: 'kraken-eth-stake',
     exchange: 'Kraken',
     asset: 'ETH',

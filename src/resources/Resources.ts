@@ -210,7 +210,7 @@ export const Resources = {
       lastUpdatedPrefix: 'Оновлено: '
     },
     options: {
-      exchanges: ['Binance', 'Bybit', 'OKX', 'Kraken'],
+      exchanges: ['Binance', 'Bybit', 'OKX', 'Bitget', 'MEXC', 'WhiteBIT', 'Kraken'],
       stakingTerms: ['Гнучкий', '30 днів', '60 днів', '90 днів']
     },
     stakingHighlights: {
