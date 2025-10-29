@@ -87,6 +87,68 @@
   font-size: 0.85rem;
 }
 
+.earn__status {
+  display: grid;
+  gap: 16px;
+}
+
+.earn__staking {
+  display: grid;
+  gap: 20px;
+}
+
+.earn__staking-header {
+  display: grid;
+  gap: 12px;
+}
+
+.earn__staking-header p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.earn__staking-body {
+  display: grid;
+  gap: 16px;
+}
+
+.earn__staking-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.earn__staking-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-secondary);
+}
+
+.earn__staking-list li div:first-of-type {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.earn__staking-list strong {
+  font-size: 1.05rem;
+}
+
+.earn__staking-list span {
+  color: var(--text-secondary);
+}
+
+.earn__staking-empty {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
 @media (max-width: 768px) {
   .earn__dataset {
     flex-direction: column;
