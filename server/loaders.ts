@@ -11,39 +11,27 @@ import {
   fallbackStakingPrograms,
   type StakingProgram
 } from './data/staking.ts';
-
-const USER_AGENT =
-  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36';
-
-async function fetchJson(url: string, options: RequestInit = {}): Promise<unknown> {
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      'user-agent': USER_AGENT,
-      accept: 'application/json, text/plain, */*',
-      ...options.headers
-    }
-  });
-
-  if (!response.ok) {
-    const error = new Error(`Request failed with status ${response.status}`);
-    (error as Error & { status?: number }).status = response.status;
-    throw error;
-  }
-
-  const text = await response.text();
-  if (!text) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(text) as unknown;
-  } catch (parseError) {
-    const error = new Error('Unable to parse JSON response');
-    error.cause = parseError as Error;
-    throw error;
-  }
-}
+import {
+  fetchBinanceEarnProducts,
+  fetchBinanceLaunchpoolProjects,
+  fetchBinanceStakingProducts
+} from './clients/binanceClient.ts';
+import { fetchBitgetEarnProducts, fetchBitgetLaunchpoolProjects } from './clients/bitgetClient.ts';
+import { fetchBybitEarnProducts, fetchBybitLaunchpoolProducts } from './clients/bybitClient.ts';
+import { fetchKrakenStakingProducts } from './clients/krakenClient.ts';
+import {
+  fetchMexcEarnProducts,
+  fetchMexcLaunchpoolProjects
+} from './clients/mexcClient.ts';
+import {
+  fetchOkxEarnProducts,
+  fetchOkxLaunchpoolProjects,
+  fetchOkxStakingProducts
+} from './clients/okxClient.ts';
+import {
+  fetchWhitebitEarnProducts,
+  fetchWhitebitLaunchpadProjects
+} from './clients/whitebitClient.ts';
 
 function ensureIsoDate(value: unknown): string | null {
   if (!value) {
@@ -286,10 +274,7 @@ export async function loadLaunchpoolData({
     {
       exchange: 'Binance',
       fetch: async () => {
-        const url =
-          'https://www.binance.com/bapi/earn/v1/public/launchpool/project/list?status=ALL&page=1&pageSize=50';
-        const json = await fetchJson(url, { headers: { clienttype: 'web' } });
-        const data = json as Record<string, any>;
+        const data = (await fetchBinanceLaunchpoolProjects()) as Record<string, any>;
         const rawList =
           data?.data?.projectList ??
           data?.data?.projects ??
@@ -303,8 +288,7 @@ export async function loadLaunchpoolData({
     {
       exchange: 'Bybit',
       fetch: async () => {
-        const url = 'https://api2.bybit.com/spot/api/earn/launchpool/product/list';
-        const json = (await fetchJson(url)) as Record<string, any>;
+        const json = (await fetchBybitLaunchpoolProducts()) as Record<string, any>;
         const rawList = json?.result?.list ?? json?.data ?? [];
         const list = Array.isArray(rawList) ? rawList : [];
         return list.map((item) => normaliseLaunchpoolItem(item as Record<string, unknown>, 'Bybit'));
@@ -313,9 +297,7 @@ export async function loadLaunchpoolData({
     {
       exchange: 'Bitget',
       fetch: async () => {
-        const url =
-          'https://www.bitget.com/v1/spot/launchpad/launchpool/ongoingList?page=1&pageSize=50';
-        const json = (await fetchJson(url)) as Record<string, any>;
+        const json = (await fetchBitgetLaunchpoolProjects()) as Record<string, any>;
         const rawList = pickArrayCandidate(
           json?.data?.list,
           json?.data?.projectList,
@@ -332,9 +314,7 @@ export async function loadLaunchpoolData({
     {
       exchange: 'OKX',
       fetch: async () => {
-        const url =
-          'https://www.okx.com/priapi/v5/earn/financial/launchpool/project?status=all&limit=50';
-        const json = (await fetchJson(url)) as Record<string, any>;
+        const json = (await fetchOkxLaunchpoolProjects()) as Record<string, any>;
         const list = Array.isArray(json?.data) ? json.data : [];
         return list.map((item) => normaliseLaunchpoolItem(item as Record<string, unknown>, 'OKX'));
       }
@@ -342,9 +322,7 @@ export async function loadLaunchpoolData({
     {
       exchange: 'MEXC',
       fetch: async () => {
-        const url =
-          'https://www.mexc.com/api/platform/launchpad/list?pageSize=50&pageNum=1&status=ALL';
-        const json = (await fetchJson(url)) as Record<string, any>;
+        const json = (await fetchMexcLaunchpoolProjects()) as Record<string, any>;
         const rawList = pickArrayCandidate(
           json?.data?.list,
           json?.data?.projects,
@@ -360,8 +338,7 @@ export async function loadLaunchpoolData({
     {
       exchange: 'WhiteBIT',
       fetch: async () => {
-        const url = 'https://whitebit.com/api/v4/public/launchpad';
-        const json = (await fetchJson(url)) as Record<string, any>;
+        const json = (await fetchWhitebitLaunchpadProjects()) as Record<string, any>;
         const rawList = pickArrayCandidate(
           json?.data?.projects,
           json?.data?.list,
@@ -407,10 +384,7 @@ export async function loadEarnData({
     {
       exchange: 'Binance',
       fetch: async () => {
-        const url =
-          'https://www.binance.com/bapi/earn/v1/public/simple-earn/product/list?type=ALWAYS&currency=&page=1&pageSize=50';
-        const json = await fetchJson(url, { headers: { clienttype: 'web' } });
-        const data = json as Record<string, any>;
+        const data = (await fetchBinanceEarnProducts()) as Record<string, any>;
         const rawList =
           (Array.isArray(data?.data) ? data?.data : data?.data?.items) ??
           data?.data?.products ??
@@ -423,8 +397,7 @@ export async function loadEarnData({
     {
       exchange: 'OKX',
       fetch: async () => {
-        const url = 'https://www.okx.com/api/v5/finance/staking-defi/offers?protocolType=defi';
-        const json = (await fetchJson(url)) as Record<string, any>;
+        const json = (await fetchOkxEarnProducts()) as Record<string, any>;
         const list = Array.isArray(json?.data) ? json.data : [];
         return list.map((item) => normaliseEarnProduct(item as Record<string, unknown>, 'OKX'));
       }
@@ -432,9 +405,7 @@ export async function loadEarnData({
     {
       exchange: 'Bybit',
       fetch: async () => {
-        const url =
-          'https://api2.bybit.com/spot/api/earn/defi/product/list?status=AVAILABLE&page=1&size=50';
-        const json = (await fetchJson(url)) as Record<string, any>;
+        const json = (await fetchBybitEarnProducts()) as Record<string, any>;
         const rawList = json?.result?.list ?? json?.data ?? [];
         const list = Array.isArray(rawList) ? rawList : [];
         return list.map((item) => normaliseEarnProduct(item as Record<string, unknown>, 'Bybit'));
@@ -443,8 +414,7 @@ export async function loadEarnData({
     {
       exchange: 'Bitget',
       fetch: async () => {
-        const url = 'https://www.bitget.com/v1/earn/defi/product/list?page=1&pageSize=50';
-        const json = (await fetchJson(url)) as Record<string, any>;
+        const json = (await fetchBitgetEarnProducts()) as Record<string, any>;
         const rawList = pickArrayCandidate(
           json?.data?.list,
           json?.data?.records,
@@ -461,9 +431,7 @@ export async function loadEarnData({
     {
       exchange: 'MEXC',
       fetch: async () => {
-        const url =
-          'https://www.mexc.com/open/api/v2/earn/product/list?page=1&page_size=50&status=ALL';
-        const json = (await fetchJson(url)) as Record<string, any>;
+        const json = (await fetchMexcEarnProducts()) as Record<string, any>;
         const rawList = pickArrayCandidate(
           json?.data?.resultList,
           json?.data?.list,
@@ -480,8 +448,7 @@ export async function loadEarnData({
     {
       exchange: 'WhiteBIT',
       fetch: async () => {
-        const url = 'https://whitebit.com/api/v4/public/earn';
-        const json = (await fetchJson(url)) as Record<string, any>;
+        const json = (await fetchWhitebitEarnProducts()) as Record<string, any>;
         const rawList = pickArrayCandidate(
           json?.data?.products,
           json?.data?.list,
@@ -527,10 +494,7 @@ export async function loadStakingData({
     {
       exchange: 'Binance',
       fetch: async () => {
-        const url =
-          'https://www.binance.com/bapi/earn/v1/public/staking/project/list?page=1&pageSize=50&type=all';
-        const json = await fetchJson(url, { headers: { clienttype: 'web' } });
-        const data = json as Record<string, any>;
+        const data = (await fetchBinanceStakingProducts()) as Record<string, any>;
         const rawList =
           (Array.isArray(data?.data) ? data?.data : data?.data?.items) ??
           data?.data?.projects ??
@@ -543,9 +507,7 @@ export async function loadStakingData({
     {
       exchange: 'OKX',
       fetch: async () => {
-        const url =
-          'https://www.okx.com/api/v5/finance/staking-defi/orders?productType=staking&limit=50';
-        const json = (await fetchJson(url)) as Record<string, any>;
+        const json = (await fetchOkxStakingProducts()) as Record<string, any>;
         const list = Array.isArray(json?.data) ? json.data : [];
         return list.map((item) => normaliseStakingItem(item as Record<string, unknown>, 'OKX'));
       }
@@ -553,8 +515,7 @@ export async function loadStakingData({
     {
       exchange: 'Kraken',
       fetch: async () => {
-        const url = 'https://www.kraken.com/api/internal/staking/list';
-        const json = (await fetchJson(url)) as Record<string, any>;
+        const json = (await fetchKrakenStakingProducts()) as Record<string, any>;
         const rawList = json?.result ?? json?.data ?? [];
         const list = Array.isArray(rawList) ? rawList : [];
         return list.map((item) => normaliseStakingItem(item as Record<string, unknown>, 'Kraken'));
