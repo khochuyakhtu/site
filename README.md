@@ -37,3 +37,47 @@ React-додаток крипто-спільноти «Хочу Яхту» з а
 - `npm run build` — продакшн-збірка.
 - `npm run preview` — попередній перегляд продакшн-збірки.
 - `npm run lint` — запуск ESLint з базовою конфігурацією React.
+
+## API-сервер
+
+Для роботи API необхідно налаштувати URL-адреси біржових ендпоінтів через змінні середовища. Кожна змінна приймає один або кілька URL, розділених комами. Якщо вказано декілька адрес, запити будуть виконуватися по черзі до першого успішного.
+
+| Змінна | Призначення |
+| --- | --- |
+| `BINANCE_LAUNCHPOOL_ENDPOINTS` | Проєкти Binance Launchpool |
+| `BINANCE_EARN_ENDPOINTS` | Продукти Binance Earn |
+| `BINANCE_STAKING_ENDPOINTS` | Продукти Binance Staking |
+| `BITGET_LAUNCHPOOL_ENDPOINTS` | Проєкти Bitget Launchpool |
+| `BITGET_EARN_ENDPOINTS` | Продукти Bitget Earn |
+| `BYBIT_LAUNCHPOOL_ENDPOINTS` | Проєкти Bybit Launchpool |
+| `BYBIT_EARN_ENDPOINTS` | Продукти Bybit Earn |
+| `KRAKEN_STAKING_ENDPOINTS` | Продукти Kraken Staking |
+| `MEXC_LAUNCHPOOL_ENDPOINTS` | Проєкти MEXC Launchpool |
+| `MEXC_EARN_ENDPOINTS` | Продукти MEXC Earn |
+| `OKX_LAUNCHPOOL_ENDPOINTS` | Проєкти OKX Launchpool |
+| `OKX_EARN_ENDPOINTS` | Продукти OKX Earn |
+| `OKX_STAKING_ENDPOINTS` | Продукти OKX Staking |
+| `WHITEBIT_LAUNCHPOOL_ENDPOINTS` | Проєкти WhiteBIT Launchpad |
+| `WHITEBIT_EARN_ENDPOINTS` | Продукти WhiteBIT Earn |
+
+Приклад файлу `.env`:
+
+```env
+BINANCE_LAUNCHPOOL_ENDPOINTS=https://example.com/binance/launchpool
+BINANCE_EARN_ENDPOINTS=https://example.com/binance/earn
+BINANCE_STAKING_ENDPOINTS=https://example.com/binance/staking
+BITGET_LAUNCHPOOL_ENDPOINTS=https://example.com/bitget/launchpool
+BITGET_EARN_ENDPOINTS=https://example.com/bitget/earn
+BYBIT_LAUNCHPOOL_ENDPOINTS=https://example.com/bybit/launchpool
+BYBIT_EARN_ENDPOINTS=https://example.com/bybit/earn
+KRAKEN_STAKING_ENDPOINTS=https://example.com/kraken/staking
+MEXC_LAUNCHPOOL_ENDPOINTS=https://example.com/mexc/launchpool
+MEXC_EARN_ENDPOINTS=https://example.com/mexc/earn
+OKX_LAUNCHPOOL_ENDPOINTS=https://example.com/okx/launchpool
+OKX_EARN_ENDPOINTS=https://example.com/okx/earn
+OKX_STAKING_ENDPOINTS=https://example.com/okx/staking
+WHITEBIT_LAUNCHPOOL_ENDPOINTS=https://example.com/whitebit/launchpool
+WHITEBIT_EARN_ENDPOINTS=https://example.com/whitebit/earn
+```
+
+> Для передачі змінних середовища при запуску API скористайтеся командою `PORT=4000 BINANCE_LAUNCHPOOL_ENDPOINTS=... npm run server` або створіть файл `.env` і завантажте його через менеджер процесів.

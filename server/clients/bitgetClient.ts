@@ -1,12 +1,9 @@
-import { fetchJson } from '../http.ts';
+import { fetchFromConfiguredEndpoints } from '../config/endpoints.ts';
 
 export async function fetchBitgetLaunchpoolProjects(): Promise<unknown> {
-  const url =
-    'https://www.bitget.com/v1/spot/launchpad/launchpool/ongoingList?page=1&pageSize=50';
-  return fetchJson(url);
+  return fetchFromConfiguredEndpoints('BITGET_LAUNCHPOOL_ENDPOINTS');
 }
 
 export async function fetchBitgetEarnProducts(): Promise<unknown> {
-  const url = 'https://www.bitget.com/v1/earn/defi/product/list?page=1&pageSize=50';
-  return fetchJson(url);
+  return fetchFromConfiguredEndpoints('BITGET_EARN_ENDPOINTS');
 }
